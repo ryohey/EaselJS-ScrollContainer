@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<title>EaselJS ScrollContainer Example</title>
+<body onload="init()">
+  <canvas id="canvas" width="640" height="480"></canvas>
+</body>
+<script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+<script src="scroll-container.js"></script>
+<script>
+function init() {
+  const canvas = document.querySelector("#canvas")
+  const stage = new createjs.Stage(canvas)
+  stage.enableMouseOver()
+
+  const scroll = new createjs.ScrollContainer(canvas)
+  scroll.x = 30
+  scroll.y = 90
+  scroll.setBounds(0, 0, 520, 300)
+  scroll.contentSize = {
+    width: 1200,
+    height: 960
+  }
+  stage.addChild(scroll)
+
+  const circle = new createjs.Shape()
+  circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50)
+  circle.x = 100
+  circle.y = 100
+  scroll.addChild(circle)
+
+  createjs.Ticker.setFPS(60)
+  createjs.Ticker.addEventListener("tick", () => {
+    stage.update()
+  })
+}
+</script>
+<style type="text/css">
+  body {
+    background-color: #eee;
+  }
+  canvas {
+    background-color: white;
+  }
+</style>

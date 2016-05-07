@@ -15,8 +15,6 @@ ScrollContainer provides scroll bars and you can use as normal Container.
 
 ```js
 const scroll = new createjs.ScrollContainer(canvas)
-scroll.x = 30
-scroll.y = 90
 scroll.setBounds(0, 0, 520, 300)
 scroll.contentSize = {
   width: 1200,

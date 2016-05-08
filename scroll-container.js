@@ -118,8 +118,7 @@
         .translate(b.width / 2, b.height / 2)
         .rotate(this.arrowRotation)
 
-      const g = this.graphics
-        .beginFill(color)
+      const g = this.graphics.beginFill(color)
       drawPoints(g, mat, [
         [0, -this.arrowHeight / 2],
         [this.arrowWidth / 2, this.arrowHeight / 2],
@@ -196,7 +195,7 @@
       })
       this.handle.on("pressmove", e => {
         const delta = this.isVertical ? this.startPos.y - e.stageY : this.startPos.x - e.stageX
-        this._changeValue(e, this.startPos.value + this.positionToValue(delta))
+        this._changeValue(e, this.startPos.value + this._positionToValue(delta))
       })
       this.addChild(this.handle)
     }
@@ -212,18 +211,8 @@
     }
 
     set value(value) {
-      this._value = Math.max(Math.min(0, value), this.maxValue)
+      this._value = Math.floor(Math.max(Math.min(0, value), this.maxValue))
       this.redraw()
-    }
-
-    set size(size) {
-      this._size = size
-      this.setBounds(0, 0, size.width, size.height)
-      this.redraw()
-    }
-
-    get size() {
-      return this._size
     }
 
     get contentLength() {
@@ -236,21 +225,38 @@
     }
 
     redraw() {
+      const b = this.getBounds()
       this.background.graphics
         .clear()
         .beginFill(BAR_COLOR)
-        .rect(0, 0, this.size.width, this.size.height)
+        .rect(0, 0, b.width, b.height)
 
-      this.drawArrows()
-      this.drawHandle()
+      this._drawArrows()
+      this._drawHandle()
     }
 
     get barWidth() {
-      return this.isVertical ? this.size.width : this.size.height
+      return this.isVertical ? this.getBounds().width : this.getBounds().height
     }
 
     get barLength() {
-      return !this.isVertical ? this.size.width : this.size.height
+      return !this.isVertical ? this.getBounds().width : this.getBounds().height
+    }
+
+    set barWidth(w) {
+      const b = this.getBounds()
+      !this.isVertical ? 
+        this.setBounds(0, 0, b.width, w) :
+        this.setBounds(0, 0, w, b.height)
+      this.redraw()
+    }
+
+    set barLength(len) {
+      const b = this.getBounds()
+      this.isVertical ? 
+        this.setBounds(0, 0, b.width, len) :
+        this.setBounds(0, 0, len, b.height)
+      this.redraw()
     }
 
     get isVertical() {
@@ -261,11 +267,11 @@
       return Math.min(0.001, this.barLength - this._contentLength)
     }
 
-    positionToValue(pos) {
+    _positionToValue(pos) {
       return pos * this._contentLength / (this.barLength - 2 * this.barWidth)
     }
 
-    drawHandle() {
+    _drawHandle() {
       function normalize(v) {
         return Math.max(0, Math.min(1, v))
       }
@@ -290,7 +296,7 @@
       this.handle.redraw()
     }
 
-    drawArrows() {
+    _drawArrows() {
       const size = this.barWidth
       const px = this.isVertical ? 0 : 1
       const py = this.isVertical ? 1 : 0
@@ -320,11 +326,13 @@
       this.scrollBarV = new ScrollBar(ScrollBarOrientaion.VERTICAL)
       this.scrollBarV.unitIncrement = UNIT_INCREMENT
       this.scrollBarV.blockIncrement = BLOCK_INCREMENT
+      this.scrollBarV.barWidth = SCROLL_BAR_SIZE
       this.addChild(this.scrollBarV)
 
       this.scrollBarH = new ScrollBar(ScrollBarOrientaion.HORIZONTAL)
       this.scrollBarH.unitIncrement = UNIT_INCREMENT
       this.scrollBarH.blockIncrement = BLOCK_INCREMENT
+      this.scrollBarH.barWidth = SCROLL_BAR_SIZE
       this.addChild(this.scrollBarH)
 
       this.scrollBarV.on("change", e => {
@@ -392,16 +400,10 @@
       }
 
       this.scrollBarV.x = width - SCROLL_BAR_SIZE
-      this.scrollBarV.size = {
-        width: SCROLL_BAR_SIZE,
-        height: height - SCROLL_BAR_SIZE
-      }
+      this.scrollBarV.barLength = height - SCROLL_BAR_SIZE
 
       this.scrollBarH.y = height - SCROLL_BAR_SIZE
-      this.scrollBarH.size = {
-        width: width - SCROLL_BAR_SIZE,
-        height: SCROLL_BAR_SIZE
-      }
+      this.scrollBarH.barLength = width - SCROLL_BAR_SIZE
     }
   }
 

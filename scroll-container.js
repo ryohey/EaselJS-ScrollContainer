@@ -348,8 +348,8 @@
       canvas.addEventListener("mousewheel", e => {
         const h = this.contentSize.height - this.getBounds().height
         const w = this.contentSize.width - this.getBounds().width
-        this.scrollY = Math.min(0, Math.max(this.scrollY + e.wheelDeltaY, -h - SCROLL_BAR_SIZE))
-        this.scrollX = Math.min(0, Math.max(this.scrollX + e.wheelDeltaX, -w - SCROLL_BAR_SIZE))
+        this.scrollY += e.wheelDeltaY
+        this.scrollX += e.wheelDeltaX
       })
 
       this.superAddChild = this.addChild
@@ -364,7 +364,8 @@
     }
 
     set scrollX(x) {
-      this.container.x = x
+      const w = this.contentSize.width - this.getBounds().width
+      this.container.x = Math.min(0, Math.max(x, -w - SCROLL_BAR_SIZE))
       this.scrollBarH.value = x
       this.dispatchEvent("scroll")
     }
@@ -374,7 +375,8 @@
     }
 
     set scrollY(y) {
-      this.container.y = y
+      const h = this.contentSize.height - this.getBounds().height
+      this.container.y = Math.min(0, Math.max(y, -h - SCROLL_BAR_SIZE))
       this.scrollBarV.value = y
       this.dispatchEvent("scroll")
     }

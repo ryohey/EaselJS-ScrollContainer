@@ -365,7 +365,7 @@
 
     set scrollX(x) {
       const w = this.contentSize.width - this.getBounds().width
-      this.container.x = Math.min(0, Math.max(x, -w - SCROLL_BAR_SIZE))
+      this.container.x = Math.min(0, Math.floor(Math.max(x, -w - SCROLL_BAR_SIZE)))
       this.scrollBarH.value = x
       this.dispatchEvent("scroll")
     }

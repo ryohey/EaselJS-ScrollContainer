@@ -401,6 +401,9 @@
         height: Math.max(height, this.contentSize.height)
       }
 
+      this.container.mask = new createjs.Shape
+      this.container.mask.graphics.beginFill("#efefef").rect(x, y, width, height)
+
       this.scrollBarV.x = width - SCROLL_BAR_SIZE
       this.scrollBarV.barLength = height - SCROLL_BAR_SIZE
 

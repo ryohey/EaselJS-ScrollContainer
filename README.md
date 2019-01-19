@@ -34,7 +34,3 @@ scroll.addChild(circle)
 - Shows scroll bar like Windows 10
 - Scroll by the mouse wheel
 - Scroll by bar dragging
-
-## Issues
-
-- This does not clip children

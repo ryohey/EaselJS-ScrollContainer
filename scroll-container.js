@@ -345,11 +345,9 @@
         this.dispatchEvent("scroll")
       })
 
-      canvas.addEventListener("mousewheel", e => {
-        const h = this.contentSize.height - this.getBounds().height
-        const w = this.contentSize.width - this.getBounds().width
-        this.scrollY += e.wheelDeltaY
-        this.scrollX += e.wheelDeltaX
+      canvas.addEventListener("wheel", e => {
+        this.scrollY -= e.deltaY
+        this.scrollX -= e.deltaX
       })
 
       this.superAddChild = this.addChild
